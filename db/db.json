@@ -15,6 +15,10 @@
     {
       "title": "test note 3",
       "text": "This is for me"
+    },
+    {
+      "title": "These are my notes",
+      "text": "They're over there"
     }
   ]
 }
