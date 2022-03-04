@@ -6,8 +6,15 @@
     },
     {
       "title": "this is my rifle",
-      "text": "this is my gun",
-      "id": "1"
+      "text": "this is my gun"
+    },
+    {
+      "title": "this is for fighting",
+      "text": "This is for fun"
+    },
+    {
+      "title": "test note 3",
+      "text": "This is for me"
     }
   ]
 }
