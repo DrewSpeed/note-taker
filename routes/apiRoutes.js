@@ -1,36 +1,59 @@
+// Dependencies
 const router = require('express').Router();
-const { notes } = require('../db/db.json')
 const fs = require('fs');
-const { createNewNote, validateNote, deleteNote } = require('../lib/notes');
 
+// route the notes into the /notes page
 router.get('/notes', (req, res) => {
-    fs.readFile(__dirname + "/../db/db.json", 'utf8', (error, data) => {
+    fs.readFile("./db/db.json", (error, data) => {
         if (error) {
             return console.log(error);
         }
-        console.log("Notes", data);
-        res.json(JSON.parse(data));
+        dbData = JSON.parse(data);
+        res.send(dbData);
     } )
 });
 
+// route for when notes are added
 router.post('/notes', (req, res) => {
-    if (!validateNote(req.body)) {
-        res.status(400).send('The note is not formatted properly');
-    } else {
-        const note = createNewNote(req.body, notes);
-        res.json(note);
-    }
-});
+        const note = req.body;
 
+        fs.readFile("./db/db.json", (err, data) => {
+            if (err) throw err;
+            noteArray = JSON.parse(data);
+            noteArray.push(note);
+            let number = 1;
+            noteArray.forEach((userNote, index) => {
+                userNote.id = number;
+                number++;
+                return noteArray;
+            });
+
+            fs.writeFile("./db/db.json", JSON.stringify(noteArray), (err, data) => {
+                if (err) throw err;
+            },);
+        });
+        res.send('Note successfully saved');
+    });
+
+// Route for deleting notes
 router.delete('/notes/:id', (req, res) => {
-    const id = req.params.id;
-    if (id) {
-        const updated = deleteNote(id, notes);
-        res.json(updated);
-    } else {
-        res.send(404);
-    }
-});
+         const deleteNote = req.params.id;
+ 
+         fs.readFile('./db/db.json', (err, data) => {
+             if (err) throw err;
+ 
+             noteArray = JSON.parse(data);
+             for (let i = 0; i < noteArray.length; i++) {
+                 if (noteArray[i].id === Number(deleteNote)) {
+                     noteArray.splice([i], 1);
+                 }
+             }
+ 
+             fs.writeFile('./db/db.json', JSON.stringify(noteArray), (err, data) => {
+                 if (err) throw err;
+             });
+         });
+         res.status(204).send();
+     });
 
 module.exports = router;
-
